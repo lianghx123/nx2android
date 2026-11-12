@@ -84,6 +84,13 @@ On Windows, `build_bootloader.py` compiles PyInstaller's launcher on this PC (it
 
 ## Tests
 
+`test_nvn_sampler_cache` exercises the production sampler initializer, finalizer,
+comparison and object layout. It checks that all four formerly skipped filter/wrap
+fields participate in an opaque-object CRC, preserves guard bytes beyond the
+smallest public object, and models hash lookup followed by semantic comparison:
+10,000 alternating requests must retain two entries. Its C harness can also run
+natively on Android; the cache model is separate from gameplay validation.
+
 `DM_VK_PIXEL_HISTORY=WxH:X,Y` traces a single pixel of matching single-sample
 B10G11R11 target 0 for one frame, bounded to 4096 logical draw/clear events. It
 records packed HDR/depth values and draw identity/state in `pixel_history.tsv`.
