@@ -84,6 +84,24 @@ On Windows, `build_bootloader.py` compiles PyInstaller's launcher on this PC (it
 
 ## Tests
 
+`DM_VK_PIXEL_HISTORY=WxH:X,Y` traces a single pixel of matching single-sample
+B10G11R11 target 0 for one frame, bounded to 4096 logical draw/clear events. It
+records packed HDR/depth values and draw identity/state in `pixel_history.tsv`.
+The 64 KiB transfer buffer stays alive until its completion fence, then is
+invalidated before host reads. Default off; excludes concurrent ordinary pass
+dumps. Per-draw pass cuts and copies can hide driver hazards and are unsuitable
+for timing. Check that the original final pixel survives the instrumentation.
+`test_vk_pixel_history` exercises production ROI/HDR helpers and mocked Vulkan
+capture/fence/resource behavior; its harness also runs natively on Android.
+
+`test_shader_perspective_cancellation` runs the actual Ryujinx SSA interpolation
+rule through a .NET reflection harness (set `DOTNET` if the SDK is not on PATH).
+It tests both outer multiply orders, unchanged-input selection, SSA use tracking
+and near matches that must remain unchanged: non-unit reciprocal numerators,
+other FragCoord components, non-input loads, FP64 and extra scale factors.
+This preserves consistent native-perspective UVs between alpha depth/material
+variants without changing sampler state or alpha thresholds.
+
 ```
 python -m unittest discover tests
 ```
